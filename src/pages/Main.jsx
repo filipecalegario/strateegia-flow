@@ -101,19 +101,22 @@ export default function Main() {
       <Loading active={isLoading} />
       <Box margin={10}>
         <UnorderedList margin={5}>
-          {selectedFlow?.map((item) => (
-            <ListItem key={item.id}>
-              <strong>event type:</strong> {item.event_type}
-              <br></br>
-              <strong>author:</strong> {item.payload.author.name}
-              <br></br>
-              <strong>updated at:</strong> {item.payload.updated_at}
-              <br></br>
-              <strong>parent:</strong> {item.payload.parent?.text}
-              <br></br>
-              <strong>child:</strong> {item.payload.text}
-            </ListItem>
-          ))}
+          {selectedFlow?.map(
+            (item, index) =>
+              index < 25 && (
+                <ListItem key={item.id}>
+                  <strong>event type:</strong> {item.event_type}
+                  <br></br>
+                  <strong>author:</strong> {item.payload.author.name}
+                  <br></br>
+                  <strong>updated at:</strong> {item.payload.updated_at}
+                  <br></br>
+                  <strong>parent:</strong> {item.payload.parent?.text}
+                  <br></br>
+                  <strong>child:</strong> {item.payload.text}
+                </ListItem>
+              )
+          )}
         </UnorderedList>
       </Box>
     </Box>

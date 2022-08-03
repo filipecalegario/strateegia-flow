@@ -107,7 +107,7 @@ export default function Main() {
                 <ListItem key={item.id}>
                   <strong>event type:</strong> {item.event_type}
                   <br></br>
-                  <strong>author:</strong> {item.payload.author.name}
+                  <strong>author:</strong> {item.payload.author?.name}
                   <br></br>
                   <strong>updated at:</strong> {item.payload.updated_at}
                   <br></br>

@@ -43,7 +43,6 @@ export default function Main() {
       setIsLoading(true);
       try {
         const flowData_ = await getFlowNotifications(accessToken_);
-        setFlowData(flowData_);
         const projects = flowData_.content.map((item) => {
           return {
             id: item.context.project.id,
@@ -55,6 +54,8 @@ export default function Main() {
         ].map((id) => {
           return projects.find((obj) => obj.id === id);
         });
+        setFlowData(flowData_);
+        // console.log("flowData_ inverted order %o", flowData_.content.sort((a,b) => new Date(a.updated_at) - new Date(b.updated_at)))
         setProjectList(distinctProjects);
         setIsLoading(false);
       } catch (error) {

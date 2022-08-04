@@ -89,21 +89,19 @@ export default function Main() {
                     <br></br>
                     <strong>author:</strong> {item.payload.author?.name}
                     <br></br>
-                    <strong>updated at:</strong>{" "}
-                    {new Date(item.payload.updated_at).toLocaleDateString(
-                      "pt-br",
-                      // {
-                      //   weekday: "short",
-                      //   year: "numeric",
-                      //   month: "short",
-                      //   day: "numeric",
-                      // }
-                    )}
+                    <strong>updated at: </strong>
+                    {new Date(
+                      new Date(item.payload.updated_at) -
+                        new Date().getTimezoneOffset() * 60 * 1000
+                    ).toLocaleDateString("pt-br")}{" "}
                     {" às "}
-                    {new Date(item.payload.updated_at).toLocaleTimeString(
-                      "pt-BR",
-                      { hour: "numeric", minute: "numeric" }
-                    )}
+                    {new Date(
+                      new Date(item.payload.updated_at) -
+                        new Date().getTimezoneOffset() * 60 * 1000
+                    ).toLocaleTimeString("pt-BR", {
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
                     {" ("}
                     {diffDays(new Date(item.payload.updated_at), new Date())}
                     {" dias atrás)"}

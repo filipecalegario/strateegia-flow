@@ -1,13 +1,15 @@
-import {
-  Box,
-  Heading,
-  Select,
-  UnorderedList,
-  ListItem,
-} from "@chakra-ui/react";
+import { Box, ListItem, Select, UnorderedList, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import {
+  FiCompass,
+  FiHome,
+  FiSettings,
+  FiStar,
+  FiTrendingUp,
+} from "react-icons/fi";
 import Loading from "../components/Loading";
 import { getFlowNotifications } from "../data/quickStrateegiaAPI";
+import SimpleSidebar from "./SimpleSidebar";
 
 export default function Main() {
   const [selectedProject, setSelectedProject] = useState("");
@@ -19,6 +21,11 @@ export default function Main() {
 
   const handleSelectChange = (e) => {
     setSelectedProject(e.target.value);
+  };
+
+  const handleClick = (e) => {
+    // console.log("click %o", e.target.id);
+    setSelectedProject(e.target.id);
   };
 
   useEffect(() => {
@@ -65,60 +72,79 @@ export default function Main() {
     setAccessToken(accessToken_);
   }, []);
 
+  const sideBarItems = [
+    { name: "Home", icon: FiHome },
+    { name: "Trending", icon: FiTrendingUp },
+    { name: "Explore", icon: FiCompass },
+    { name: "Favourites", icon: FiStar },
+    { name: "Settings", icon: FiSettings },
+  ];
+
+  const sideBarProjects = projectList?.map((project) => {
+    return { name: project.title, id: project.id, icon: FiCompass };
+  });
+
+  const projectTitle = projectList?.find(
+    (e) => e.id === selectedProject
+  )?.title;
+
+  const diffDays = (date1, date2) =>
+    parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
+
   return (
-    <Box padding={10}>
-      <Box display="flex">
-        {/* <ProjectList handleSelectChange={handleSelectChange} /> */}
-        {/* <Link
-          href={`https://app.strateegia.digital/journey/${selectedProject}/map/${firstMap}`}
-          target="_blank"
-          bg="#E9ECEF"
-          borderRadius={" 0 6px 6px 0 "}
-          fontSize={16}
-          w={200}
-          h="40px"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          link para a jornada
-        </Link> */}
-        <Select
-          placeholder="escolha o projeto"
-          onChange={handleSelectChange}
-          borderRadius={"6px 0 0 6px"}
-        >
-          {projectList &&
-            projectList.map((item) => {
-              return (
-                <option key={item.id} value={item.id}>
-                  {item.title}
-                </option>
-              );
-            })}
-        </Select>
+    <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
+      <Box padding={10}>
+        {/* <Box display="flex">
+          <Select
+            placeholder="escolha o projeto"
+            onChange={handleSelectChange}
+            borderRadius={"6px 0 0 6px"}
+          >
+            {projectList &&
+              projectList.map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.title}
+                  </option>
+                );
+              })}
+          </Select>
+        </Box> */}
+        <Text fontSize="lg">{projectTitle}</Text>
+        <Loading active={isLoading} />
+        <Box margin={10}>
+          <UnorderedList margin={5}>
+            {selectedFlow?.map(
+              (item, index) =>
+                index < 25 && (
+                  <ListItem key={item.id} mb={3}>
+                    <strong>event type:</strong> {item.event_type}
+                    <br></br>
+                    <strong>author:</strong> {item.payload.author?.name}
+                    <br></br>
+                    <strong>updated at:</strong>{" "}
+                    {new Date(item.payload.updated_at).toLocaleDateString(
+                      "pt-br",
+                      {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    )}
+                    {" - "}
+                    {diffDays(new Date(item.payload.updated_at), new Date())}
+                    {" dias atrás"}
+                    <br></br>
+                    <strong>parent:</strong> {item.payload.parent?.text}
+                    <br></br>
+                    <strong>child:</strong> {item.payload.text}
+                  </ListItem>
+                )
+            )}
+          </UnorderedList>
+        </Box>
       </Box>
-      <Loading active={isLoading} />
-      <Box margin={10}>
-        <UnorderedList margin={5}>
-          {selectedFlow?.map(
-            (item, index) =>
-              index < 25 && (
-                <ListItem key={item.id}>
-                  <strong>event type:</strong> {item.event_type}
-                  <br></br>
-                  <strong>author:</strong> {item.payload.author?.name}
-                  <br></br>
-                  <strong>updated at:</strong> {item.payload.updated_at}
-                  <br></br>
-                  <strong>parent:</strong> {item.payload.parent?.text}
-                  <br></br>
-                  <strong>child:</strong> {item.payload.text}
-                </ListItem>
-              )
-          )}
-        </UnorderedList>
-      </Box>
-    </Box>
+    </SimpleSidebar>
   );
 }

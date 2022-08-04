@@ -3,8 +3,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Signin from './pages/Signin';
 import Main from './pages/Main';
+import Signin from './pages/Signin';
 
 function App() {
   return (

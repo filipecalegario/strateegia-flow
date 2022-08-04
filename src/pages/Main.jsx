@@ -11,6 +11,9 @@ import Loading from "../components/Loading";
 import { getFlowNotifications } from "../data/quickStrateegiaAPI";
 import SimpleSidebar from "./SimpleSidebar";
 
+const diffDays = (date1, date2) =>
+  parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
+
 export default function Main() {
   const [selectedProject, setSelectedProject] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +43,6 @@ export default function Main() {
       setIsLoading(true);
       try {
         const flowData_ = await getFlowNotifications(accessToken_);
-        console.log("flow %o", flowData_);
         setFlowData(flowData_);
         const projects = flowData_.content.map((item) => {
           return {
@@ -48,20 +50,12 @@ export default function Main() {
             title: item.context.project.title,
           };
         });
-        console.log("projects %o", projects);
         const distinctProjects = [
           ...new Set(projects.map((obj) => obj.id)),
         ].map((id) => {
           return projects.find((obj) => obj.id === id);
         });
         setProjectList(distinctProjects);
-        console.log("distinct projects %o", distinctProjects);
-        const idFromSelection = "601a83d4cf364315a4cb9814";
-        const idFromSelection2 = "6115ca0b95aeec1babf1c589";
-        const selectedContentByProject = flowData_.content.filter(
-          (item) => item.context.project.id === idFromSelection
-        );
-        console.log("selected projects %o", selectedContentByProject);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -72,14 +66,6 @@ export default function Main() {
     setAccessToken(accessToken_);
   }, []);
 
-  const sideBarItems = [
-    { name: "Home", icon: FiHome },
-    { name: "Trending", icon: FiTrendingUp },
-    { name: "Explore", icon: FiCompass },
-    { name: "Favourites", icon: FiStar },
-    { name: "Settings", icon: FiSettings },
-  ];
-
   const sideBarProjects = projectList?.map((project) => {
     return { name: project.title, id: project.id, icon: FiCompass };
   });
@@ -88,28 +74,9 @@ export default function Main() {
     (e) => e.id === selectedProject
   )?.title;
 
-  const diffDays = (date1, date2) =>
-    parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
-
   return (
     <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
       <Box padding={10}>
-        {/* <Box display="flex">
-          <Select
-            placeholder="escolha o projeto"
-            onChange={handleSelectChange}
-            borderRadius={"6px 0 0 6px"}
-          >
-            {projectList &&
-              projectList.map((item) => {
-                return (
-                  <option key={item.id} value={item.id}>
-                    {item.title}
-                  </option>
-                );
-              })}
-          </Select>
-        </Box> */}
         <Text fontSize="lg">{projectTitle}</Text>
         <Loading active={isLoading} />
         <Box margin={10}>

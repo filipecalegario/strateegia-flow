@@ -92,16 +92,21 @@ export default function Main() {
                     <strong>updated at:</strong>{" "}
                     {new Date(item.payload.updated_at).toLocaleDateString(
                       "pt-br",
-                      {
-                        weekday: "short",
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      }
+                      // {
+                      //   weekday: "short",
+                      //   year: "numeric",
+                      //   month: "short",
+                      //   day: "numeric",
+                      // }
                     )}
-                    {" - "}
+                    {" às "}
+                    {new Date(item.payload.updated_at).toLocaleTimeString(
+                      "pt-BR",
+                      { hour: "numeric", minute: "numeric" }
+                    )}
+                    {" ("}
                     {diffDays(new Date(item.payload.updated_at), new Date())}
-                    {" dias atrás"}
+                    {" dias atrás)"}
                     <br></br>
                     <strong>parent:</strong> {item.payload.parent?.text}
                     <br></br>

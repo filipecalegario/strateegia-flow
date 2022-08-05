@@ -15,7 +15,10 @@ import {
   FiTrendingUp,
 } from "react-icons/fi";
 import Loading from "../components/Loading";
-import { getFlowNotifications } from "../data/quickStrateegiaAPI";
+import {
+  getFlowNotifications,
+  addCommentAgreement,
+} from "../data/quickStrateegiaAPI";
 import SimpleSidebar from "./SimpleSidebar";
 
 const diffDays = (date1, date2) =>
@@ -131,9 +134,10 @@ export default function Main() {
                     {item.event_type === "QuestionCommentCreatedEvent" ? (
                       <Box display="flex" border="2x solid blue" mb={3}>
                         <Link
-                          onClick={(e) =>
-                            console.log("clicou curtir %o", e.target.id)
-                          }
+                          onClick={(e) => {
+                            console.log("clicou curtir %o", e.target.id);
+                            addCommentAgreement(accessToken, e.target.id);
+                          }}
                         >
                           <Text id={item.payload.id} mr={2}>
                             curtir
@@ -145,11 +149,7 @@ export default function Main() {
                             console.log("clicou comentar %o", e.target.id)
                           }
                         >
-                          <Text
-                            id={item.payload.id}
-                          >
-                            comentar
-                          </Text>
+                          <Text id={item.payload.id}>comentar</Text>
                         </Link>
                       </Box>
                     ) : null}

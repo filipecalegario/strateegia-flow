@@ -92,39 +92,68 @@ export default function Main() {
             {selectedFlow?.map(
               (item, index) =>
                 index < 25 && (
-                  <Link
-                    key={index}
-                    href={`https://app.strateegia.digital/journey/${item.context.project?.id}/map/${item.context.map?.id}/point/${item.context.point?.id}`}
-                    isExternal
-                    style={{ textDecoration: "none" }}
-                  >
-                    <ListItem key={item.id} mb={3}>
-                      <strong>event type:</strong> {item.event_type}
-                      <br></br>
-                      <strong>author:</strong> {item.payload.author?.name}
-                      <br></br>
-                      <strong>updated at: </strong>
-                      {new Date(
-                        new Date(item.payload.updated_at) -
-                          new Date().getTimezoneOffset() * 60 * 1000
-                      ).toLocaleDateString("pt-br")}{" "}
-                      {" às "}
-                      {new Date(
-                        new Date(item.payload.updated_at) -
-                          new Date().getTimezoneOffset() * 60 * 1000
-                      ).toLocaleTimeString("pt-BR", {
-                        hour: "numeric",
-                        minute: "numeric",
-                      })}
-                      {" ("}
-                      {diffDays(new Date(item.payload.updated_at), new Date())}
-                      {" dias atrás)"}
-                      <br></br>
-                      <strong>parent:</strong> {item.payload.parent?.text}
-                      <br></br>
-                      <strong>child:</strong> {item.payload.text}
-                    </ListItem>
-                  </Link>
+                  <>
+                    <Link
+                      key={index}
+                      href={`https://app.strateegia.digital/journey/${item.context.project?.id}/map/${item.context.map?.id}/point/${item.context.point?.id}`}
+                      isExternal
+                      style={{ textDecoration: "none" }}
+                    >
+                      <ListItem key={item.id} mb={1}>
+                        <strong>event type:</strong> {item.event_type}
+                        <br></br>
+                        <strong>author:</strong> {item.payload.author?.name}
+                        <br></br>
+                        <strong>updated at: </strong>
+                        {new Date(
+                          new Date(item.payload.updated_at) -
+                            new Date().getTimezoneOffset() * 60 * 1000
+                        ).toLocaleDateString("pt-br")}{" "}
+                        {new Date(
+                          new Date(item.payload.updated_at) -
+                            new Date().getTimezoneOffset() * 60 * 1000
+                        ).toLocaleTimeString("pt-BR", {
+                          hour: "numeric",
+                          minute: "numeric",
+                        })}
+                        {" ("}
+                        {diffDays(
+                          new Date(item.payload.updated_at),
+                          new Date()
+                        )}
+                        {" dias atrás)"}
+                        <br></br>
+                        <strong>parent:</strong> {item.payload.parent?.text}
+                        <br></br>
+                        <strong>child:</strong> {item.payload.text}
+                      </ListItem>
+                    </Link>
+                    {item.event_type === "QuestionCommentCreatedEvent" ? (
+                      <Box display="flex" border="2x solid blue" mb={3}>
+                        <Link
+                          onClick={(e) =>
+                            console.log("clicou curtir %o", e.target.id)
+                          }
+                        >
+                          <Text id={item.payload.id} mr={2}>
+                            curtir
+                          </Text>
+                        </Link>
+                        <Text mr={2}>|</Text>
+                        <Link
+                          onClick={(e) =>
+                            console.log("clicou comentar %o", e.target.id)
+                          }
+                        >
+                          <Text
+                            id={item.payload.id}
+                          >
+                            comentar
+                          </Text>
+                        </Link>
+                      </Box>
+                    ) : null}
+                  </>
                 )
             )}
           </UnorderedList>

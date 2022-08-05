@@ -1,4 +1,5 @@
 const API_URL_NOTIFICATION = "https://api.strateegia.digital/notifications/v1/"
+const API_URL_PROJECTS = 'https://api.strateegia.digital/projects/v1/';
 
 export async function getFlowNotifications(token) {
 
@@ -8,6 +9,23 @@ export async function getFlowNotifications(token) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     }
+  });
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function addCommentAgreement(token, commentId) {
+  const response = await fetch(`${API_URL_PROJECTS}question/comment/${commentId}/agreement`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    // body: JSON.stringify({
+    //     title: title
+    // })
   });
 
   const data = await response.json();

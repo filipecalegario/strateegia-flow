@@ -46,7 +46,7 @@ export default function SimpleSidebar({ sideBarItems, children, handleClick }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: 500 }} p="4">
         {children}
       </Box>
     </Box>
@@ -59,7 +59,8 @@ const SidebarContent = ({ onClose, sideBarItems, handleClick, ...rest }) => {
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
+      w={{ base: "full", md: 500 }}
+      // w="25vw"
       pos="fixed"
       h="full"
       {...rest}

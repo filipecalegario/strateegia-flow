@@ -32,3 +32,20 @@ export async function addCommentAgreement(token, commentId) {
 
   return data;
 }
+
+export async function deleteCommentAgreement(token, commentId) {
+  const response = await fetch(`${API_URL_PROJECTS}question/comment/${commentId}/agreement`, {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    // body: JSON.stringify({
+    //     title: title
+    // })
+  });
+
+  const data = await response.json();
+
+  return data;
+}

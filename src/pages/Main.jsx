@@ -38,10 +38,22 @@ export default function Main() {
   const [agreementList, setAgreementList] = useState([]);
   const [showCommentBoxList, setShowCommentBoxList] = useState([]);
   const [commentValueList, setCommentValueList] = useState([]);
+  const [itemMarkedAsReadList, setItemMarkedAsReadList] = useState([]);
 
   const handleClick = (e) => {
     // console.log("click %o", e.target.id);
     setSelectedProject(e.target.id);
+  };
+
+  const handleMarkAsRead = (e) => {
+    const id = e.target.id;
+    if (!itemMarkedAsReadList.includes(id)) {
+      setItemMarkedAsReadList([...itemMarkedAsReadList, id]);
+    } else {
+      setItemMarkedAsReadList([
+        ...itemMarkedAsReadList.filter((item) => item !== id),
+      ]);
+    }
   };
 
   const handleClickAgreement = (e) => {
@@ -116,6 +128,11 @@ export default function Main() {
   useEffect(
     () => console.log("agreementList %o", agreementList),
     [agreementList]
+  );
+
+  useEffect(
+    () => console.log("itemMarkedAsReadList %o", itemMarkedAsReadList),
+    [itemMarkedAsReadList]
   );
 
   // useEffect(
@@ -223,6 +240,21 @@ export default function Main() {
                     </Link>
                     {item.event_type === "QuestionCommentCreatedEvent" ? (
                       <Box display="flex" border="2x solid blue" mb={3}>
+                        {!itemMarkedAsReadList.includes(
+                          item.notification_id
+                        ) ? (
+                          <Link onClick={(e) => handleMarkAsRead(e)}>
+                            <Text id={item.notification_id} mr={2}>
+                              marcar como lida
+                            </Text>
+                          </Link>
+                        ) : (
+                          <Text id={item.notification_id} mr={2} color="grey">
+                            ✔︎ lida
+                          </Text>
+                        )}
+
+                        <Text mr={2}>|</Text>
                         <Link
                           onClick={(e) => {
                             handleClickAgreement(e);
@@ -239,7 +271,6 @@ export default function Main() {
                           )}
                         </Link>
                         <Text mr={2}>|</Text>
-
                         {!showCommentBoxList.includes(item.payload.id) ? (
                           <Link
                             onClick={(e) => {
@@ -249,7 +280,7 @@ export default function Main() {
                             <Text id={item.payload.id}>comentar</Text>
                           </Link>
                         ) : (
-                          <Box>
+                          <Box mr={2}>
                             <Link
                               onClick={(e) => {
                                 handleShowCommentClick(e);
@@ -264,6 +295,7 @@ export default function Main() {
                               onChange={(e) =>
                                 handleCommentChange(e, item.payload.parent)
                               }
+                              resize="none"
                             ></Textarea>
                             <Button
                               onClick={(e) =>

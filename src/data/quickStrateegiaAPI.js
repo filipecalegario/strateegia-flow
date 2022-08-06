@@ -49,3 +49,20 @@ export async function deleteCommentAgreement(token, commentId) {
 
   return data;
 }
+
+export async function markProjectNotificationsAsRead(token, notificationId){
+  const response = await fetch(`${API_URL_NOTIFICATION}flow/${notificationId}/read/project`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    // body: JSON.stringify({
+    //     title: title
+    // })
+  });
+
+  const data = await response.json();
+
+  return data;
+}

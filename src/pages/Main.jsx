@@ -168,6 +168,19 @@ export default function Main() {
     (e) => e.id === selectedProject
   )?.title;
 
+  const formatDateToShow = (dateAsString) => {
+    const dateInCurrentTimezone = new Date(
+      new Date(dateAsString) - new Date().getTimezoneOffset() * 60 * 1000
+    );
+    const dateToLocale = dateInCurrentTimezone.toLocaleDateString("pt-br");
+    const timeToLocale = dateInCurrentTimezone.toLocaleTimeString("pt-BR", {
+      hour: "numeric",
+      minute: "numeric",
+    });
+    const daysBetween = diffDays(new Date(dateAsString), new Date());
+    return `${dateToLocale} ${timeToLocale} (${daysBetween} dias atrás)`;
+  };
+
   return (
     <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
       <Box padding={10}>
@@ -177,7 +190,8 @@ export default function Main() {
           <UnorderedList margin={5}>
             {selectedFlow?.map(
               (item, index) =>
-                index < 25 && (
+                index < 25 &&
+                item.event_type === "QuestionCommentCreatedEvent" && (
                   <>
                     <Link
                       key={index}
@@ -185,34 +199,27 @@ export default function Main() {
                       isExternal
                       style={{ textDecoration: "none" }}
                     >
-                      <ListItem key={item.id} mb={1}>
-                        <strong>event type:</strong> {item.event_type}
-                        <br></br>
-                        <strong>author:</strong> {item.payload.author?.name}
-                        <br></br>
-                        <strong>updated at: </strong>
-                        {new Date(
-                          new Date(item.payload.updated_at) -
-                            new Date().getTimezoneOffset() * 60 * 1000
-                        ).toLocaleDateString("pt-br")}{" "}
-                        {new Date(
-                          new Date(item.payload.updated_at) -
-                            new Date().getTimezoneOffset() * 60 * 1000
-                        ).toLocaleTimeString("pt-BR", {
-                          hour: "numeric",
-                          minute: "numeric",
-                        })}
-                        {" ("}
-                        {diffDays(
-                          new Date(item.payload.updated_at),
-                          new Date()
-                        )}
-                        {" dias atrás)"}
-                        <br></br>
-                        <strong>parent:</strong> {item.payload.parent?.text}
-                        <br></br>
-                        <strong>child:</strong> {item.payload.text}
-                      </ListItem>
+                      {item.payload.parent ? (
+                        <ListItem key={item.id} mb={1}>
+                          <strong>{item.payload.author?.name}</strong> comentou
+                          a resposta de{" "}
+                          <strong>{item.payload.parent.author?.name}</strong> no
+                          ponto de divergência{" "}
+                          <strong>{item.context.point.title}</strong> no mapa{" "}
+                          <strong>{item.context.map.title}</strong> em{" "}
+                          {formatDateToShow(item.payload.updated_at)}:{" "}
+                          {item.payload.text}
+                        </ListItem>
+                      ) : (
+                        <ListItem key={item.id} mb={1}>
+                          <strong>{item.payload.author?.name}</strong> respondeu
+                          uma questão no ponto de divergência{" "}
+                          <strong>{item.context.point.title}</strong> no mapa{" "}
+                          <strong>{item.context.map.title}</strong> em{" "}
+                          {formatDateToShow(item.payload.updated_at)}:{" "}
+                          {item.payload.text}
+                        </ListItem>
+                      )}
                     </Link>
                     {item.event_type === "QuestionCommentCreatedEvent" ? (
                       <Box display="flex" border="2x solid blue" mb={3}>
@@ -242,7 +249,7 @@ export default function Main() {
                             <Text id={item.payload.id}>comentar</Text>
                           </Link>
                         ) : (
-                          <>
+                          <Box>
                             <Link
                               onClick={(e) => {
                                 handleShowCommentClick(e);
@@ -252,7 +259,7 @@ export default function Main() {
                             </Link>
                             <Textarea
                               id={item.payload.id}
-                              placeholder="Here is a sample placeholder"
+                              placeholder="adicione aqui seu comentário"
                               size="xs"
                               onChange={(e) =>
                                 handleCommentChange(e, item.payload.parent)
@@ -266,7 +273,7 @@ export default function Main() {
                             >
                               enviar
                             </Button>
-                          </>
+                          </Box>
                         )}
                       </Box>
                     ) : null}

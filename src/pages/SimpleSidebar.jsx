@@ -10,17 +10,20 @@ import {
   Text,
   useColorModeValue,
   useDisclosure,
+  Image
 } from "@chakra-ui/react";
 import React from "react";
 import { FiMenu } from "react-icons/fi";
+import { IoMdArrowDropright } from "react-icons/io";
+import strateegiaLogo from '../assets/strateegia_logo.png'
 
 export default function SimpleSidebar({ sideBarItems, children, handleClick }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box
       minH="100vh"
-      bg={useColorModeValue("gray.100", "gray.900")}
-    >
+      bg="white"
+      >
       <SidebarContent
         onClose={() => onClose}
         sideBarItems={sideBarItems}
@@ -46,7 +49,7 @@ export default function SimpleSidebar({ sideBarItems, children, handleClick }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 500 }} p="4">
+      <Box ml={{ base: 0, md: 500 }}>
         {children}
       </Box>
     </Box>
@@ -56,7 +59,7 @@ export default function SimpleSidebar({ sideBarItems, children, handleClick }) {
 const SidebarContent = ({ onClose, sideBarItems, handleClick, ...rest }) => {
   return (
     <Box
-      bg={useColorModeValue("white", "gray.900")}
+      bg="#25C6A8"
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
       w={{ base: "full", md: 500 }}
@@ -65,12 +68,14 @@ const SidebarContent = ({ onClose, sideBarItems, handleClick, ...rest }) => {
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="lg" fontWeight="bold">
-          strateegia flow
+      <Flex w='100%' h="20" alignItems="center" mx="0">
+        <Image src={strateegiaLogo} h='60px' mx='10px'/>
+        <Text color='white' fontSize="2xl" fontWeight="bold">
+          flow.strateegia
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
+        <Box padding='none' as='hr' borderBottom="sm" borderColor='white'/>
       {sideBarItems?.map((link) => (
         <NavItem
           key={link.id}
@@ -91,6 +96,8 @@ const NavItem = ({ icon, children, ...rest }) => {
       href="#"
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
+      color='white'
+      fontSize="lg"
     >
       <Flex
         align="center"
@@ -100,7 +107,7 @@ const NavItem = ({ icon, children, ...rest }) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "blue.400",
           color: "white",
         }}
         {...rest}
@@ -108,11 +115,11 @@ const NavItem = ({ icon, children, ...rest }) => {
         {icon && (
           <Icon
             mr="4"
-            fontSize="16"
+            fontSize="30"
             _groupHover={{
               color: "white",
             }}
-            as={icon}
+            as={IoMdArrowDropright}
           />
         )}
         {children}

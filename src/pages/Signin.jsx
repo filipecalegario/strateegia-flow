@@ -15,6 +15,8 @@ import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const DEFAULT_COLOR = "#25C6A8";
+
 export default function Signin() {
   const navigate = useNavigate();
 
@@ -53,7 +55,12 @@ export default function Signin() {
   }, []);
 
   return (
-    <Flex minH={"100vh"} align={"top"} justify={"start"}>
+    <Flex
+      minH={"100vh"}
+      align={"top"}
+      justify={"start"}
+      background={DEFAULT_COLOR}
+    >
       {/* <ColorModeSwitcher /> */}
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         {/* <Stack align={'center'}>
@@ -64,28 +71,30 @@ export default function Signin() {
         </Stack> */}
         <Box
           rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
+          // bg={useColorModeValue("white", "gray.700")}
+          bg={DEFAULT_COLOR}
           // boxShadow={'lg'}
           p={8}
         >
           <form onSubmit={handleSubmit} id="login-form">
             <Stack spacing={4}>
               <FormControl id="email">
-                <FormLabel>seu login em strateegia</FormLabel>
+                <FormLabel color="white">seu login em strateegia</FormLabel>
                 <Input type="email" name="email" onChange={handleChange} />
               </FormControl>
               <FormControl id="password">
-                <FormLabel>sua senha em strateegia</FormLabel>
+                <FormLabel color="white">sua senha em strateegia</FormLabel>
                 <Input
                   type="password"
                   name="password"
                   onChange={handleChange}
+                  
                 />
               </FormControl>
               <Stack spacing={10}>
                 <Button
-                  bg={"#3C69EB"}
-                  color={"white"}
+                  bg={"white"}
+                  color={"#25C6A8"}
                   _hover={{
                     bg: "blue.400",
                   }}

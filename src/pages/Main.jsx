@@ -198,10 +198,11 @@ export default function Main() {
     return `${dateToLocale} ${timeToLocale} (${daysBetween} dias atrás)`;
   };
 
-  return (
+  return (<>
     <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
-      <Box padding={10}>
-        <Text fontSize="lg">{projectTitle}</Text>
+        <Text h='80px' py='20px' mx='90px' fontWeight='bold' fontSize="2xl">{projectTitle}</Text>
+        <Box padding='none' m='none' as='hr' borderBottom="sm" borderColor='#25C6A8'/>
+      <Box px={10}>
         <Loading active={isLoading} />
         <Box margin={10}>
           <UnorderedList margin={5}>
@@ -243,7 +244,7 @@ export default function Main() {
                         {!itemMarkedAsReadList.includes(
                           item.notification_id
                         ) ? (
-                          <Link onClick={(e) => handleMarkAsRead(e)}>
+                          <Link style={{ textDecoration: "none" }} onClick={(e) => handleMarkAsRead(e)}>
                             <Text id={item.notification_id} mr={2}>
                               marcar como lida
                             </Text>
@@ -256,28 +257,30 @@ export default function Main() {
 
                         <Text mr={2}>|</Text>
                         <Link
+                        style={{ textDecoration: "none" }}
                           onClick={(e) => {
                             handleClickAgreement(e);
                           }}
                         >
                           {!agreementList.includes(item.payload.id) ? (
-                            <Text id={item.payload.id} mr={2}>
+                            <Text color='#25C6A8' id={item.payload.id} mr={2}>
                               curtir
                             </Text>
                           ) : (
-                            <Text id={item.payload.id} mr={2} color="grey">
+                            <Text color='red' id={item.payload.id} mr={2} >
                               remover curtida
                             </Text>
                           )}
                         </Link>
-                        <Text mr={2}>|</Text>
+                        <Text color='#25C6A8' mr={2}>|</Text>
                         {!showCommentBoxList.includes(item.payload.id) ? (
                           <Link
+                          style={{ textDecoration: "none" }}
                             onClick={(e) => {
                               handleShowCommentClick(e);
                             }}
                           >
-                            <Text id={item.payload.id}>comentar</Text>
+                            <Text  color='#25C6A8' id={item.payload.id}>comentar</Text>
                           </Link>
                         ) : (
                           <Box mr={2}>
@@ -316,5 +319,6 @@ export default function Main() {
         </Box>
       </Box>
     </SimpleSidebar>
+    </>
   );
 }

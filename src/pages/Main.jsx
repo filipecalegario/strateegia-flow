@@ -34,7 +34,7 @@ export default function Main() {
   const [accessToken, setAccessToken] = useState("");
   const [projectList, setProjectList] = useState(null);
   const [flowData, setFlowData] = useState(null);
-  const [selectedFlow, setSelectedFlow] = useState(null);
+  const [selectedFlow, setSelectedFlow] = useState([]);
   const [agreementList, setAgreementList] = useState([]);
   const [showCommentBoxList, setShowCommentBoxList] = useState([]);
   const [commentValueList, setCommentValueList] = useState([]);
@@ -141,6 +141,18 @@ export default function Main() {
   // );
 
   useEffect(() => {
+    console.log("selectedFlow %o", selectedFlow);
+  }, [selectedFlow]);
+
+  useEffect(() => {
+    console.log("projectList %o", projectList);
+  }, [projectList]);
+
+  useEffect(() => {
+    console.log("flowData %o", flowData);
+  }, [flowData]);
+
+  useEffect(() => {
     const selectedContentByProject = flowData?.content.filter(
       (item) => item.context.project.id === selectedProject
     );
@@ -151,7 +163,11 @@ export default function Main() {
     async function fetchFlow() {
       setIsLoading(true);
       try {
-        const flowData_ = await getFlowNotifications(accessToken_);
+        let flowData_ = await getFlowNotifications(accessToken_);
+        // filtering question comment events
+        flowData_.content = flowData_.content.filter(
+          (item) => item.event_type === "QuestionCommentCreatedEvent"
+        );
         const projects = flowData_.content.map((item) => {
           // console.log(item.event_type);
           return {
@@ -220,7 +236,6 @@ export default function Main() {
             borderColor="#25C6A8"
           />
           <Box px={6}>
-            <Loading active={isLoading} />
             <Box margin={10}>
               <UnorderedList margin={5}>
                 {selectedFlow?.map(
@@ -283,7 +298,7 @@ export default function Main() {
                             >
                               {!agreementList.includes(item.payload.id) ? (
                                 <Text
-                                  fontSize={{ base: "xs", md: "lg" }}
+                                  fontSize={{ base: "xs", md: "md" }}
                                   color="#25C6A8"
                                   id={item.payload.id}
                                   mr={2}
@@ -307,7 +322,7 @@ export default function Main() {
                                 }}
                               >
                                 <Text
-                                  fontSize={{ base: "xs", md: "lg" }}
+                                  fontSize={{ base: "xs", md: "md" }}
                                   color="#25C6A8"
                                   id={item.payload.id}
                                 >
@@ -322,7 +337,9 @@ export default function Main() {
                                   }}
                                   style={{ textDecoration: "none" }}
                                 >
-                                  <Text id={item.payload.id}>fechar</Text>
+                                  <Text color="grey" id={item.payload.id}>
+                                    fechar
+                                  </Text>
                                 </Link>
                                 <Textarea
                                   id={item.payload.id}
@@ -332,6 +349,7 @@ export default function Main() {
                                     handleCommentChange(e, item.payload.parent)
                                   }
                                   resize="none"
+                                  mb={1}
                                 ></Textarea>
                                 <Button
                                   onClick={(e) =>
@@ -341,6 +359,13 @@ export default function Main() {
                                     )
                                   }
                                   id={item.payload.id}
+                                  size="xs"
+                                  bg={"#25C6A8"}
+                                  color={"white"}
+                                  _hover={{
+                                    bg: "#00B894",
+                                    color: "white",
+                                  }}
                                 >
                                   enviar
                                 </Button>

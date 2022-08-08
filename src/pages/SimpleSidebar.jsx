@@ -70,10 +70,11 @@ const SidebarContent = ({ onClose, sideBarItems, handleClick, ...rest }) => {
     >
       <Flex w='100%' h="20" alignItems="center" mx="0">
         <Image src={strateegiaLogo} h='60px' mx='10px'/>
-        <Text color='white' fontSize="2xl" fontWeight="bold">
-          flow.strateegia
+        <Text color='white' fontSize="2xl" as='span' fontWeight={'600'}>flow</Text>
+        <Text color='white' fontSize="2xl">
+        .strateegia
         </Text>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+        <CloseButton color='white' display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
         <Box padding='none' as='hr' borderBottom="sm" borderColor='white'/>
       {sideBarItems?.map((link) => (
@@ -107,7 +108,7 @@ const NavItem = ({ icon, children, ...rest }) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "blue.400",
+          bg: "#00B894",
           color: "white",
         }}
         {...rest}
@@ -147,10 +148,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
         aria-label="open menu"
         icon={<FiMenu />}
       />
+<Flex ml='20px'>
 
-      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-        Logo
-      </Text>
+        <Text color='black' fontSize="2xl" as='span' fontWeight={'600'}>flow</Text>
+        <Text color='black' fontSize="2xl">
+        .strateegia
+        </Text>
+
+</Flex>
     </Flex>
   );
 };

@@ -9,11 +9,14 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  Image
 } from "@chakra-ui/react";
 import { auth } from "strateegia-api";
 import { ColorModeSwitcher } from "../ColorModeSwitcher";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import strateegiaLogo from '../assets/strateegia_logo.png'
+
 
 const DEFAULT_COLOR = "#25C6A8";
 
@@ -58,33 +61,36 @@ export default function Signin() {
     <Flex
       minH={"100vh"}
       align={"top"}
-      justify={"start"}
+      justify={"center"}
       background={DEFAULT_COLOR}
     >
       {/* <ColorModeSwitcher /> */}
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        {/* <Stack align={'center'}>
-          <Heading fontSize={'2xl'}>strateegia caixa morfológica</Heading>
-          <Text fontSize={'lg'} color={'gray.600'}>
-            entre com seu login de strateegia
-          </Text>
-        </Stack> */}
-        <Box
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={'150px'} px={6}>
+        <Flex
+        flexDirection={'column'}
           rounded={"lg"}
-          // bg={useColorModeValue("white", "gray.700")}
           bg={DEFAULT_COLOR}
-          // boxShadow={'lg'}
           p={8}
+          align={'center'}
         >
+        <Image src={strateegiaLogo} w='90px' h='90px' mx='10px'/>
+        <Flex>
+          
+        <Text color='white' fontSize="2xl" as='span' fontWeight={'600'}>flow</Text>
+        <Text marginBottom={'20px'} color='white' fontSize="2xl">
+        .strateegia
+        </Text>
+        </Flex>
           <form onSubmit={handleSubmit} id="login-form">
             <Stack spacing={4}>
               <FormControl id="email">
-                <FormLabel color="white">seu login em strateegia</FormLabel>
-                <Input type="email" name="email" onChange={handleChange} />
+                <FormLabel m='0' paddingBottom={'5px'} textAlign={'center'} color="white">seu login em strateegia</FormLabel>
+                <Input variant='outline' type="email" name="email" onChange={handleChange} />
               </FormControl>
               <FormControl id="password">
-                <FormLabel color="white">sua senha em strateegia</FormLabel>
+                <FormLabel m='0' paddingBottom={'5px'} textAlign={'center'} color="white">sua senha em strateegia</FormLabel>
                 <Input
+                variant='outline'
                   type="password"
                   name="password"
                   onChange={handleChange}
@@ -96,7 +102,8 @@ export default function Signin() {
                   bg={"white"}
                   color={"#25C6A8"}
                   _hover={{
-                    bg: "blue.400",
+                    bg: "#00B894",
+                    color: 'white'
                   }}
                   type="submit"
                 >
@@ -105,7 +112,7 @@ export default function Signin() {
               </Stack>
             </Stack>
           </form>
-        </Box>
+        </Flex>
       </Stack>
     </Flex>
   );

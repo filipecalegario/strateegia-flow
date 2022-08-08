@@ -200,9 +200,9 @@ export default function Main() {
 
   return (<>
     <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
-        <Text h='80px' py='20px' mx='90px' fontWeight='bold' fontSize="2xl">{projectTitle}</Text>
+        <Text textAlign={{base: 'center', md: 'left'}} h={{base: '100%', md: '80px'}} py={{base: '10px', md: '20px'}} mx={{base: 'auto', md: '90px'}} fontWeight='bold' fontSize={{base: 'lg', md:"2xl"}}>{projectTitle}</Text>
         <Box padding='none' m='none' as='hr' borderBottom="sm" borderColor='#25C6A8'/>
-      <Box px={10}>
+      <Box  px={6}>
         <Loading active={isLoading} />
         <Box margin={10}>
           <UnorderedList margin={5}>
@@ -245,7 +245,7 @@ export default function Main() {
                           item.notification_id
                         ) ? (
                           <Link style={{ textDecoration: "none" }} onClick={(e) => handleMarkAsRead(e)}>
-                            <Text id={item.notification_id} mr={2}>
+                            <Text fontSize={{base: 'xs', md: 'lg'}} color='#25C6A8' id={item.notification_id} mr={2}>
                               marcar como lida
                             </Text>
                           </Link>
@@ -255,7 +255,7 @@ export default function Main() {
                           </Text>
                         )}
 
-                        <Text mr={2}>|</Text>
+                        <Text mr={2} color='#25C6A8'>|</Text>
                         <Link
                         style={{ textDecoration: "none" }}
                           onClick={(e) => {
@@ -263,11 +263,11 @@ export default function Main() {
                           }}
                         >
                           {!agreementList.includes(item.payload.id) ? (
-                            <Text color='#25C6A8' id={item.payload.id} mr={2}>
+                            <Text fontSize={{base: 'xs', md: 'lg'}} color='#25C6A8' id={item.payload.id} mr={2}>
                               curtir
                             </Text>
                           ) : (
-                            <Text color='red' id={item.payload.id} mr={2} >
+                            <Text color='grey' id={item.payload.id} mr={2} >
                               remover curtida
                             </Text>
                           )}
@@ -280,7 +280,7 @@ export default function Main() {
                               handleShowCommentClick(e);
                             }}
                           >
-                            <Text  color='#25C6A8' id={item.payload.id}>comentar</Text>
+                            <Text fontSize={{base: 'xs', md: 'lg'}} color='#25C6A8' id={item.payload.id}>comentar</Text>
                           </Link>
                         ) : (
                           <Box mr={2}>
@@ -288,6 +288,7 @@ export default function Main() {
                               onClick={(e) => {
                                 handleShowCommentClick(e);
                               }}
+                              style={{ textDecoration: "none" }}
                             >
                               <Text id={item.payload.id}>fechar</Text>
                             </Link>

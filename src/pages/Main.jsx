@@ -20,11 +20,14 @@ import {
   getFlowNotifications,
 } from "../data/quickStrateegiaAPI";
 import SimpleSidebar from "./SimpleSidebar";
+import { useNavigate } from "react-router-dom";
 
 const diffDays = (date1, date2) =>
   parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
 
 export default function Main() {
+  const navigate = useNavigate();
+
   const [selectedProject, setSelectedProject] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [accessToken, setAccessToken] = useState("");

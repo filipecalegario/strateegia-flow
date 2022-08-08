@@ -1,29 +1,25 @@
 import {
   Box,
-  ListItem,
-  Select,
-  UnorderedList,
-  Text,
-  Link,
-  Textarea,
   Button,
+  Flex,
+  Link,
+  ListItem,
+  Text,
+  Textarea,
+  UnorderedList,
+  Icon,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import {
-  FiCompass,
-  FiHome,
-  FiSettings,
-  FiStar,
-  FiTrendingUp,
-} from "react-icons/fi";
+import { FiCompass, FiRefreshCw } from "react-icons/fi";
+import { HiOutlineRefresh } from "react-icons/hi";
+import { createReplyComment } from "strateegia-api";
 import Loading from "../components/Loading";
 import {
-  getFlowNotifications,
   addCommentAgreement,
   deleteCommentAgreement,
+  getFlowNotifications,
 } from "../data/quickStrateegiaAPI";
 import SimpleSidebar from "./SimpleSidebar";
-import { createReplyComment } from "strateegia-api";
 
 const diffDays = (date1, date2) =>
   parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
@@ -43,6 +39,11 @@ export default function Main() {
   const handleClick = (e) => {
     // console.log("click %o", e.target.id);
     setSelectedProject(e.target.id);
+  };
+
+  const handleRefresh = (e) => {
+    console.log("refresh!");
+    fetchFlow(accessToken);
   };
 
   const handleMarkAsRead = (e) => {
@@ -159,37 +160,38 @@ export default function Main() {
     setSelectedFlow(selectedContentByProject);
   }, [flowData?.content, selectedProject]);
 
-  useEffect(() => {
-    async function fetchFlow() {
-      setIsLoading(true);
-      try {
-        let flowData_ = await getFlowNotifications(accessToken_);
-        // filtering question comment events
-        flowData_.content = flowData_.content.filter(
-          (item) => item.event_type === "QuestionCommentCreatedEvent"
-        );
-        const projects = flowData_.content.map((item) => {
-          // console.log(item.event_type);
-          return {
-            id: item.context.project.id,
-            title: item.context.project.title,
-          };
-        });
-        const distinctProjects = [
-          ...new Set(projects.map((obj) => obj.id)),
-        ].map((id) => {
+  async function fetchFlow(accessToken_) {
+    setIsLoading(true);
+    try {
+      let flowData_ = await getFlowNotifications(accessToken_);
+      // filtering question comment events
+      flowData_.content = flowData_.content.filter(
+        (item) => item.event_type === "QuestionCommentCreatedEvent"
+      );
+      const projects = flowData_.content.map((item) => {
+        // console.log(item.event_type);
+        return {
+          id: item.context.project.id,
+          title: item.context.project.title,
+        };
+      });
+      const distinctProjects = [...new Set(projects.map((obj) => obj.id))].map(
+        (id) => {
           return projects.find((obj) => obj.id === id);
-        });
-        setFlowData(flowData_);
-        // console.log("flowData_ inverted order %o", flowData_.content.sort((a,b) => new Date(a.updated_at) - new Date(b.updated_at)))
-        setProjectList(distinctProjects);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
+        }
+      );
+      setFlowData(flowData_);
+      // console.log("flowData_ inverted order %o", flowData_.content.sort((a,b) => new Date(a.updated_at) - new Date(b.updated_at)))
+      setProjectList(distinctProjects);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
     }
+  }
+
+  useEffect(() => {
     const accessToken_ = localStorage.getItem("accessToken");
-    fetchFlow();
+    fetchFlow(accessToken_);
     setAccessToken(accessToken_);
   }, []);
 
@@ -218,16 +220,30 @@ export default function Main() {
     <>
       {!isLoading ? (
         <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
-          <Text
-            textAlign={{ base: "center", md: "left" }}
-            h={{ base: "100%", md: "80px" }}
-            py={{ base: "10px", md: "20px" }}
-            mx={{ base: "auto", md: "90px" }}
-            fontWeight="bold"
-            fontSize={{ base: "lg", md: "2xl" }}
+          <Flex
+            mx={{ base: "auto", md: "45px" }}
+            alignItems={"center"}
+            justifyContent="space-between"
           >
-            {projectTitle}
-          </Text>
+            <Text
+              textAlign={{ base: "center", md: "left" }}
+              h={{ base: "100%", md: "80px" }}
+              py={{ base: "10px", md: "20px" }}
+              fontWeight="bold"
+              fontSize={{ base: "lg", md: "xl" }}
+            >
+              {projectTitle}
+            </Text>
+            <Icon
+              fontSize="30"
+              _hover={{
+                color: "#25C6A8",
+              }}
+              cursor="pointer"
+              as={HiOutlineRefresh}
+              onClick={handleRefresh}
+            />
+          </Flex>
           <Box
             padding="none"
             m="none"

@@ -241,7 +241,7 @@ export default function Main() {
                     </Link>
                     {item.event_type === "QuestionCommentCreatedEvent" ? (
                       <Box display="flex" border="2x solid blue" mb={3}>
-                        {!itemMarkedAsReadList.includes(
+                        {/* {!itemMarkedAsReadList.includes(
                           item.notification_id
                         ) ? (
                           <Link style={{ textDecoration: "none" }} onClick={(e) => handleMarkAsRead(e)}>
@@ -255,7 +255,7 @@ export default function Main() {
                           </Text>
                         )}
 
-                        <Text mr={2} color='#25C6A8'>|</Text>
+                        <Text mr={2} color='#25C6A8'>|</Text> */}
                         <Link
                         style={{ textDecoration: "none" }}
                           onClick={(e) => {

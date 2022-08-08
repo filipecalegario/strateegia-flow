@@ -198,50 +198,69 @@ export default function Main() {
     return `${dateToLocale} ${timeToLocale} (${daysBetween} dias atrás)`;
   };
 
-  return (<>
-    <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
-        <Text textAlign={{base: 'center', md: 'left'}} h={{base: '100%', md: '80px'}} py={{base: '10px', md: '20px'}} mx={{base: 'auto', md: '90px'}} fontWeight='bold' fontSize={{base: 'lg', md:"2xl"}}>{projectTitle}</Text>
-        <Box padding='none' m='none' as='hr' borderBottom="sm" borderColor='#25C6A8'/>
-      <Box  px={6}>
-        <Loading active={isLoading} />
-        <Box margin={10}>
-          <UnorderedList margin={5}>
-            {selectedFlow?.map(
-              (item, index) =>
-                index < 25 &&
-                item.event_type === "QuestionCommentCreatedEvent" && (
-                  <>
-                    <Link
-                      key={index}
-                      href={`https://app.strateegia.digital/journey/${item.context.project?.id}/map/${item.context.map?.id}/point/${item.context.point?.id}`}
-                      isExternal
-                      style={{ textDecoration: "none" }}
-                    >
-                      {item.payload.parent ? (
-                        <ListItem key={item.id} mb={1}>
-                          <strong>{item.payload.author?.name}</strong> comentou
-                          a resposta de{" "}
-                          <strong>{item.payload.parent.author?.name}</strong> no
-                          ponto de divergência{" "}
-                          <strong>{item.context.point.title}</strong> no mapa{" "}
-                          <strong>{item.context.map.title}</strong> em{" "}
-                          {formatDateToShow(item.payload.updated_at)}:{" "}
-                          {item.payload.text}
-                        </ListItem>
-                      ) : (
-                        <ListItem key={item.id} mb={1}>
-                          <strong>{item.payload.author?.name}</strong> respondeu
-                          uma questão no ponto de divergência{" "}
-                          <strong>{item.context.point.title}</strong> no mapa{" "}
-                          <strong>{item.context.map.title}</strong> em{" "}
-                          {formatDateToShow(item.payload.updated_at)}:{" "}
-                          {item.payload.text}
-                        </ListItem>
-                      )}
-                    </Link>
-                    {item.event_type === "QuestionCommentCreatedEvent" ? (
-                      <Box display="flex" border="2x solid blue" mb={3}>
-                        {/* {!itemMarkedAsReadList.includes(
+  return (
+    <>
+      {!isLoading ? (
+        <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
+          <Text
+            textAlign={{ base: "center", md: "left" }}
+            h={{ base: "100%", md: "80px" }}
+            py={{ base: "10px", md: "20px" }}
+            mx={{ base: "auto", md: "90px" }}
+            fontWeight="bold"
+            fontSize={{ base: "lg", md: "2xl" }}
+          >
+            {projectTitle}
+          </Text>
+          <Box
+            padding="none"
+            m="none"
+            as="hr"
+            borderBottom="sm"
+            borderColor="#25C6A8"
+          />
+          <Box px={6}>
+            <Loading active={isLoading} />
+            <Box margin={10}>
+              <UnorderedList margin={5}>
+                {selectedFlow?.map(
+                  (item, index) =>
+                    index < 25 &&
+                    item.event_type === "QuestionCommentCreatedEvent" && (
+                      <>
+                        <Link
+                          key={index}
+                          href={`https://app.strateegia.digital/journey/${item.context.project?.id}/map/${item.context.map?.id}/point/${item.context.point?.id}`}
+                          isExternal
+                          style={{ textDecoration: "none" }}
+                        >
+                          {item.payload.parent ? (
+                            <ListItem key={item.id} mb={1}>
+                              <strong>{item.payload.author?.name}</strong>{" "}
+                              comentou a resposta de{" "}
+                              <strong>
+                                {item.payload.parent.author?.name}
+                              </strong>{" "}
+                              no ponto de divergência{" "}
+                              <strong>{item.context.point.title}</strong> no
+                              mapa <strong>{item.context.map.title}</strong> em{" "}
+                              {formatDateToShow(item.payload.updated_at)}:{" "}
+                              {item.payload.text}
+                            </ListItem>
+                          ) : (
+                            <ListItem key={item.id} mb={1}>
+                              <strong>{item.payload.author?.name}</strong>{" "}
+                              respondeu uma questão no ponto de divergência{" "}
+                              <strong>{item.context.point.title}</strong> no
+                              mapa <strong>{item.context.map.title}</strong> em{" "}
+                              {formatDateToShow(item.payload.updated_at)}:{" "}
+                              {item.payload.text}
+                            </ListItem>
+                          )}
+                        </Link>
+                        {item.event_type === "QuestionCommentCreatedEvent" ? (
+                          <Box display="flex" border="2x solid blue" mb={3}>
+                            {/* {!itemMarkedAsReadList.includes(
                           item.notification_id
                         ) ? (
                           <Link style={{ textDecoration: "none" }} onClick={(e) => handleMarkAsRead(e)}>
@@ -256,70 +275,91 @@ export default function Main() {
                         )}
 
                         <Text mr={2} color='#25C6A8'>|</Text> */}
-                        <Link
-                        style={{ textDecoration: "none" }}
-                          onClick={(e) => {
-                            handleClickAgreement(e);
-                          }}
-                        >
-                          {!agreementList.includes(item.payload.id) ? (
-                            <Text fontSize={{base: 'xs', md: 'lg'}} color='#25C6A8' id={item.payload.id} mr={2}>
-                              curtir
-                            </Text>
-                          ) : (
-                            <Text color='grey' id={item.payload.id} mr={2} >
-                              remover curtida
-                            </Text>
-                          )}
-                        </Link>
-                        <Text color='#25C6A8' mr={2}>|</Text>
-                        {!showCommentBoxList.includes(item.payload.id) ? (
-                          <Link
-                          style={{ textDecoration: "none" }}
-                            onClick={(e) => {
-                              handleShowCommentClick(e);
-                            }}
-                          >
-                            <Text fontSize={{base: 'xs', md: 'lg'}} color='#25C6A8' id={item.payload.id}>comentar</Text>
-                          </Link>
-                        ) : (
-                          <Box mr={2}>
                             <Link
-                              onClick={(e) => {
-                                handleShowCommentClick(e);
-                              }}
                               style={{ textDecoration: "none" }}
+                              onClick={(e) => {
+                                handleClickAgreement(e);
+                              }}
                             >
-                              <Text id={item.payload.id}>fechar</Text>
+                              {!agreementList.includes(item.payload.id) ? (
+                                <Text
+                                  fontSize={{ base: "xs", md: "lg" }}
+                                  color="#25C6A8"
+                                  id={item.payload.id}
+                                  mr={2}
+                                >
+                                  curtir
+                                </Text>
+                              ) : (
+                                <Text color="grey" id={item.payload.id} mr={2}>
+                                  remover curtida
+                                </Text>
+                              )}
                             </Link>
-                            <Textarea
-                              id={item.payload.id}
-                              placeholder="adicione aqui seu comentário"
-                              size="xs"
-                              onChange={(e) =>
-                                handleCommentChange(e, item.payload.parent)
-                              }
-                              resize="none"
-                            ></Textarea>
-                            <Button
-                              onClick={(e) =>
-                                handleCommentSendClick(e, item.payload.parent)
-                              }
-                              id={item.payload.id}
-                            >
-                              enviar
-                            </Button>
+                            <Text color="#25C6A8" mr={2}>
+                              |
+                            </Text>
+                            {!showCommentBoxList.includes(item.payload.id) ? (
+                              <Link
+                                style={{ textDecoration: "none" }}
+                                onClick={(e) => {
+                                  handleShowCommentClick(e);
+                                }}
+                              >
+                                <Text
+                                  fontSize={{ base: "xs", md: "lg" }}
+                                  color="#25C6A8"
+                                  id={item.payload.id}
+                                >
+                                  comentar
+                                </Text>
+                              </Link>
+                            ) : (
+                              <Box mr={2}>
+                                <Link
+                                  onClick={(e) => {
+                                    handleShowCommentClick(e);
+                                  }}
+                                  style={{ textDecoration: "none" }}
+                                >
+                                  <Text id={item.payload.id}>fechar</Text>
+                                </Link>
+                                <Textarea
+                                  id={item.payload.id}
+                                  placeholder="adicione aqui seu comentário"
+                                  size="xs"
+                                  onChange={(e) =>
+                                    handleCommentChange(e, item.payload.parent)
+                                  }
+                                  resize="none"
+                                ></Textarea>
+                                <Button
+                                  onClick={(e) =>
+                                    handleCommentSendClick(
+                                      e,
+                                      item.payload.parent
+                                    )
+                                  }
+                                  id={item.payload.id}
+                                >
+                                  enviar
+                                </Button>
+                              </Box>
+                            )}
                           </Box>
-                        )}
-                      </Box>
-                    ) : null}
-                  </>
-                )
-            )}
-          </UnorderedList>
-        </Box>
-      </Box>
-    </SimpleSidebar>
+                        ) : null}
+                      </>
+                    )
+                )}
+              </UnorderedList>
+            </Box>
+          </Box>
+        </SimpleSidebar>
+      ) : (
+        <>
+          <Loading active={isLoading} />
+        </>
+      )}
     </>
   );
 }

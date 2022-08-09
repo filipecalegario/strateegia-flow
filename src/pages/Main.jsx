@@ -163,6 +163,17 @@ export default function Main() {
     setSelectedFlow(selectedContentByProject);
   }, [flowData?.content, selectedProject]);
 
+  const incognito = (data) => {
+    data.content.forEach((item) => {
+      if (item.payload.incognito_mode) {
+        item.payload.author.name = "*****";
+        if (item.payload.parent) {
+          item.payload.parent.author.name = "******";
+        }
+      }
+    });
+  };
+
   async function fetchFlow(accessToken_) {
     setIsLoading(true);
     try {
@@ -171,6 +182,7 @@ export default function Main() {
       flowData_.content = flowData_.content.filter(
         (item) => item.event_type === "QuestionCommentCreatedEvent"
       );
+      incognito(flowData_);
       const projects = flowData_.content.map((item) => {
         // console.log(item.event_type);
         return {
@@ -270,10 +282,16 @@ export default function Main() {
                         >
                           {item.payload.parent ? (
                             <ListItem key={item.id} mb={1}>
-                              <strong>{item.payload.author?.name}</strong>{" "}
+                              <strong>
+                                {item.payload.incognito_mode
+                                  ? "*****"
+                                  : item.payload.author?.name}
+                              </strong>{" "}
                               comentou a resposta de{" "}
                               <strong>
-                                {item.payload.parent.author?.name}
+                                {item.payload.incognito_mode
+                                  ? "*****"
+                                  : item.payload.parent.author?.name}
                               </strong>{" "}
                               no ponto de divergência{" "}
                               <strong>{item.context.point.title}</strong> no
@@ -283,7 +301,11 @@ export default function Main() {
                             </ListItem>
                           ) : (
                             <ListItem key={item.id} mb={1}>
-                              <strong>{item.payload.author?.name}</strong>{" "}
+                              <strong>
+                                {item.payload.incognito_mode
+                                  ? "*****"
+                                  : item.payload.author?.name}
+                              </strong>{" "}
                               respondeu uma questão no ponto de divergência{" "}
                               <strong>{item.context.point.title}</strong> no
                               mapa <strong>{item.context.map.title}</strong> em{" "}

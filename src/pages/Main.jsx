@@ -236,7 +236,7 @@ export default function Main() {
       {!isLoading ? (
         <SimpleSidebar sideBarItems={sideBarProjects} handleClick={handleClick}>
           <Flex
-            mx={{ base: "auto", md: "45px" }}
+            mx={{ base: "20px", md: "45px" }}
             alignItems={"center"}
             justifyContent="space-between"
           >
@@ -347,7 +347,7 @@ export default function Main() {
                                   curtir
                                 </Text>
                               ) : (
-                                <Text color="grey" id={item.payload.id} mr={2}>
+                                <Text fontSize={{ base: "xs", md: "md" }} color="grey" id={item.payload.id} mr={2}>
                                   remover curtida
                                 </Text>
                               )}
@@ -378,7 +378,7 @@ export default function Main() {
                                   }}
                                   style={{ textDecoration: "none" }}
                                 >
-                                  <Text color="grey" id={item.payload.id}>
+                                  <Text fontSize={{ base: "xs", md: "md" }} color="grey" id={item.payload.id}>
                                     fechar
                                   </Text>
                                 </Link>

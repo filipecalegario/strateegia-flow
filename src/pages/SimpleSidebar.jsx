@@ -92,7 +92,10 @@ const SidebarContent = ({ onClose, sideBarItems, handleClick, ...rest }) => {
           key={link.id}
           id={link.id}
           icon={link.icon}
-          onClick={handleClick}
+          onClick={(e) => {
+            handleClick(e);
+            onClose(e);
+          }}
         >
           {link.name}
         </NavItem>

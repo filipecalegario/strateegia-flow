@@ -168,7 +168,7 @@ export default function Main() {
     );
     const firstNItems = _.take(selectedContentByProject, 25);
     const groupedFlow = Object.entries(
-      _.groupBy(firstNItems, "context.point.title")
+      _.groupBy(firstNItems, "context.point.id")
     );
     setSelectedFlow(groupedFlow);
   }, [flowData?.content, selectedProject]);
@@ -283,7 +283,8 @@ export default function Main() {
                   return (
                     <>
                       <Text as="h1" fontSize="xl" mt="20px" mb={3}>
-                        ponto de divergência: <strong>{groupFlow[0]}</strong>
+                        ponto de divergência:{" "}
+                        <strong>{groupFlow[1][0].context.point.title}</strong>
                         <Box
                           padding="none"
                           m="none"

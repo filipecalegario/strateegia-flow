@@ -316,10 +316,7 @@ export default function Main() {
                                         ? "*****"
                                         : item.payload.parent.author?.name}
                                     </strong>{" "}
-                                    no ponto de divergência{" "}
-                                    <strong>{item.context.point.title}</strong>{" "}
-                                    no mapa{" "}
-                                    <strong>{item.context.map.title}</strong> em{" "}
+                                    em{" "}
                                     {formatDateToShow(item.payload.updated_at)}:{" "}
                                     {item.payload.text}
                                   </ListItem>
@@ -330,11 +327,7 @@ export default function Main() {
                                         ? "*****"
                                         : item.payload.author?.name}
                                     </strong>{" "}
-                                    respondeu uma questão no ponto de
-                                    divergência{" "}
-                                    <strong>{item.context.point.title}</strong>{" "}
-                                    no mapa{" "}
-                                    <strong>{item.context.map.title}</strong> em{" "}
+                                    respondeu uma questão em{" "}
                                     {formatDateToShow(item.payload.updated_at)}:{" "}
                                     {item.payload.text}
                                   </ListItem>

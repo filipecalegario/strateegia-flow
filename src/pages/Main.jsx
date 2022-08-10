@@ -21,6 +21,7 @@ import {
 } from "../data/quickStrateegiaAPI";
 import SimpleSidebar from "./SimpleSidebar";
 import { useNavigate } from "react-router-dom";
+import _ from "lodash";
 
 const diffDays = (date1, date2) =>
   parseInt((date2 - date1) / (1000 * 60 * 60 * 24), 10);
@@ -34,6 +35,7 @@ export default function Main() {
   const [projectList, setProjectList] = useState(null);
   const [flowData, setFlowData] = useState(null);
   const [selectedFlow, setSelectedFlow] = useState([]);
+  const [selectedGroupedFlow, setSelectedGroupedFlow] = useState([]);
   const [agreementList, setAgreementList] = useState([]);
   const [showCommentBoxList, setShowCommentBoxList] = useState([]);
   const [commentValueList, setCommentValueList] = useState([]);
@@ -146,6 +148,10 @@ export default function Main() {
 
   useEffect(() => {
     console.log("selectedFlow %o", selectedFlow);
+    console.log(
+      "groupedFlow %o",
+      Object.entries(_.groupBy(selectedFlow, "context.point.title"))
+    );
   }, [selectedFlow]);
 
   useEffect(() => {
@@ -160,7 +166,10 @@ export default function Main() {
     const selectedContentByProject = flowData?.content.filter(
       (item) => item.context.project.id === selectedProject
     );
-    setSelectedFlow(selectedContentByProject);
+    const groupedFlow = Object.entries(
+      _.groupBy(selectedContentByProject, "context.point.title")
+    );
+    setSelectedFlow(groupedFlow);
   }, [flowData?.content, selectedProject]);
 
   const incognito = (data) => {
@@ -269,54 +278,68 @@ export default function Main() {
           <Box px={6}>
             <Box margin={10}>
               <UnorderedList margin={5}>
-                {selectedFlow?.map(
-                  (item, index) =>
-                    index < 25 &&
-                    item.event_type === "QuestionCommentCreatedEvent" && (
-                      <>
-                        <Link
-                          key={index}
-                          href={`https://app.strateegia.digital/journey/${item.context.project?.id}/map/${item.context.map?.id}/point/${item.context.point?.id}`}
-                          isExternal
-                          style={{ textDecoration: "none" }}
-                        >
-                          {item.payload.parent ? (
-                            <ListItem key={item.id} mb={1}>
-                              <strong>
-                                {item.payload.incognito_mode
-                                  ? "*****"
-                                  : item.payload.author?.name}
-                              </strong>{" "}
-                              comentou a resposta de{" "}
-                              <strong>
-                                {item.payload.incognito_mode
-                                  ? "*****"
-                                  : item.payload.parent.author?.name}
-                              </strong>{" "}
-                              no ponto de divergência{" "}
-                              <strong>{item.context.point.title}</strong> no
-                              mapa <strong>{item.context.map.title}</strong> em{" "}
-                              {formatDateToShow(item.payload.updated_at)}:{" "}
-                              {item.payload.text}
-                            </ListItem>
-                          ) : (
-                            <ListItem key={item.id} mb={1}>
-                              <strong>
-                                {item.payload.incognito_mode
-                                  ? "*****"
-                                  : item.payload.author?.name}
-                              </strong>{" "}
-                              respondeu uma questão no ponto de divergência{" "}
-                              <strong>{item.context.point.title}</strong> no
-                              mapa <strong>{item.context.map.title}</strong> em{" "}
-                              {formatDateToShow(item.payload.updated_at)}:{" "}
-                              {item.payload.text}
-                            </ListItem>
-                          )}
-                        </Link>
-                        {item.event_type === "QuestionCommentCreatedEvent" ? (
-                          <Box display="flex" border="2x solid blue" mb={3}>
-                            {/* {!itemMarkedAsReadList.includes(
+                {selectedFlow.map((groupFlow) => {
+                  return (
+                    <>
+                      <Text as="h1" fontSize="xl" mt="20px" mb={3}>
+                        <strong>{groupFlow[0]}</strong>
+                      </Text>
+                      {groupFlow[1].map(
+                        (item, index) =>
+                          index < 25 &&
+                          item.event_type === "QuestionCommentCreatedEvent" && (
+                            <>
+                              <Link
+                                key={index}
+                                href={`https://app.strateegia.digital/journey/${item.context.project?.id}/map/${item.context.map?.id}/point/${item.context.point?.id}`}
+                                isExternal
+                                style={{ textDecoration: "none" }}
+                              >
+                                {item.payload.parent ? (
+                                  <ListItem key={item.id} mb={1}>
+                                    <strong>
+                                      {item.payload.incognito_mode
+                                        ? "*****"
+                                        : item.payload.author?.name}
+                                    </strong>{" "}
+                                    comentou a resposta de{" "}
+                                    <strong>
+                                      {item.payload.incognito_mode
+                                        ? "*****"
+                                        : item.payload.parent.author?.name}
+                                    </strong>{" "}
+                                    no ponto de divergência{" "}
+                                    <strong>{item.context.point.title}</strong>{" "}
+                                    no mapa{" "}
+                                    <strong>{item.context.map.title}</strong> em{" "}
+                                    {formatDateToShow(item.payload.updated_at)}:{" "}
+                                    {item.payload.text}
+                                  </ListItem>
+                                ) : (
+                                  <ListItem key={item.id} mb={1}>
+                                    <strong>
+                                      {item.payload.incognito_mode
+                                        ? "*****"
+                                        : item.payload.author?.name}
+                                    </strong>{" "}
+                                    respondeu uma questão no ponto de
+                                    divergência{" "}
+                                    <strong>{item.context.point.title}</strong>{" "}
+                                    no mapa{" "}
+                                    <strong>{item.context.map.title}</strong> em{" "}
+                                    {formatDateToShow(item.payload.updated_at)}:{" "}
+                                    {item.payload.text}
+                                  </ListItem>
+                                )}
+                              </Link>
+                              {item.event_type ===
+                              "QuestionCommentCreatedEvent" ? (
+                                <Box
+                                  display="flex"
+                                  border="2x solid blue"
+                                  mb={3}
+                                >
+                                  {/* {!itemMarkedAsReadList.includes(
                           item.notification_id
                         ) ? (
                           <Link style={{ textDecoration: "none" }} onClick={(e) => handleMarkAsRead(e)}>
@@ -331,92 +354,111 @@ export default function Main() {
                         )}
 
                         <Text mr={2} color='#25C6A8'>|</Text> */}
-                            <Link
-                              style={{ textDecoration: "none" }}
-                              onClick={(e) => {
-                                handleClickAgreement(e);
-                              }}
-                            >
-                              {!agreementList.includes(item.payload.id) ? (
-                                <Text
-                                  fontSize={{ base: "xs", md: "md" }}
-                                  color="#25C6A8"
-                                  id={item.payload.id}
-                                  mr={2}
-                                >
-                                  curtir
-                                </Text>
-                              ) : (
-                                <Text fontSize={{ base: "xs", md: "md" }} color="grey" id={item.payload.id} mr={2}>
-                                  remover curtida
-                                </Text>
-                              )}
-                            </Link>
-                            <Text color="#25C6A8" mr={2}>
-                              |
-                            </Text>
-                            {!showCommentBoxList.includes(item.payload.id) ? (
-                              <Link
-                                style={{ textDecoration: "none" }}
-                                onClick={(e) => {
-                                  handleShowCommentClick(e);
-                                }}
-                              >
-                                <Text
-                                  fontSize={{ base: "xs", md: "md" }}
-                                  color="#25C6A8"
-                                  id={item.payload.id}
-                                >
-                                  comentar
-                                </Text>
-                              </Link>
-                            ) : (
-                              <Box mr={2}>
-                                <Link
-                                  onClick={(e) => {
-                                    handleShowCommentClick(e);
-                                  }}
-                                  style={{ textDecoration: "none" }}
-                                >
-                                  <Text fontSize={{ base: "xs", md: "md" }} color="grey" id={item.payload.id}>
-                                    fechar
+                                  <Link
+                                    style={{ textDecoration: "none" }}
+                                    onClick={(e) => {
+                                      handleClickAgreement(e);
+                                    }}
+                                  >
+                                    {!agreementList.includes(
+                                      item.payload.id
+                                    ) ? (
+                                      <Text
+                                        fontSize={{ base: "xs", md: "md" }}
+                                        color="#25C6A8"
+                                        id={item.payload.id}
+                                        mr={2}
+                                      >
+                                        curtir
+                                      </Text>
+                                    ) : (
+                                      <Text
+                                        fontSize={{ base: "xs", md: "md" }}
+                                        color="grey"
+                                        id={item.payload.id}
+                                        mr={2}
+                                      >
+                                        remover curtida
+                                      </Text>
+                                    )}
+                                  </Link>
+                                  <Text color="#25C6A8" mr={2}>
+                                    |
                                   </Text>
-                                </Link>
-                                <Textarea
-                                  id={item.payload.id}
-                                  placeholder="adicione aqui seu comentário"
-                                  size="xs"
-                                  onChange={(e) =>
-                                    handleCommentChange(e, item.payload.parent)
-                                  }
-                                  resize="none"
-                                  mb={1}
-                                ></Textarea>
-                                <Button
-                                  onClick={(e) =>
-                                    handleCommentSendClick(
-                                      e,
-                                      item.payload.parent
-                                    )
-                                  }
-                                  id={item.payload.id}
-                                  size="xs"
-                                  bg={"#25C6A8"}
-                                  color={"white"}
-                                  _hover={{
-                                    bg: "#00B894",
-                                    color: "white",
-                                  }}
-                                >
-                                  enviar
-                                </Button>
-                              </Box>
-                            )}
-                          </Box>
-                        ) : null}
-                      </>
-                    )
-                )}
+                                  {!showCommentBoxList.includes(
+                                    item.payload.id
+                                  ) ? (
+                                    <Link
+                                      style={{ textDecoration: "none" }}
+                                      onClick={(e) => {
+                                        handleShowCommentClick(e);
+                                      }}
+                                    >
+                                      <Text
+                                        fontSize={{ base: "xs", md: "md" }}
+                                        color="#25C6A8"
+                                        id={item.payload.id}
+                                      >
+                                        comentar
+                                      </Text>
+                                    </Link>
+                                  ) : (
+                                    <Box mr={2}>
+                                      <Link
+                                        onClick={(e) => {
+                                          handleShowCommentClick(e);
+                                        }}
+                                        style={{ textDecoration: "none" }}
+                                      >
+                                        <Text
+                                          fontSize={{ base: "xs", md: "md" }}
+                                          color="grey"
+                                          id={item.payload.id}
+                                        >
+                                          fechar
+                                        </Text>
+                                      </Link>
+                                      <Textarea
+                                        id={item.payload.id}
+                                        placeholder="adicione aqui seu comentário"
+                                        size="xs"
+                                        onChange={(e) =>
+                                          handleCommentChange(
+                                            e,
+                                            item.payload.parent
+                                          )
+                                        }
+                                        resize="none"
+                                        mb={1}
+                                      ></Textarea>
+                                      <Button
+                                        onClick={(e) =>
+                                          handleCommentSendClick(
+                                            e,
+                                            item.payload.parent
+                                          )
+                                        }
+                                        id={item.payload.id}
+                                        size="xs"
+                                        bg={"#25C6A8"}
+                                        color={"white"}
+                                        _hover={{
+                                          bg: "#00B894",
+                                          color: "white",
+                                        }}
+                                      >
+                                        enviar
+                                      </Button>
+                                    </Box>
+                                  )}
+                                </Box>
+                              ) : null}
+                            </>
+                          )
+                      )}
+                    </>
+                  );
+                })}
               </UnorderedList>
             </Box>
           </Box>
